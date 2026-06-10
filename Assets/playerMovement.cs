@@ -22,11 +22,14 @@ public class playerMovement : MonoBehaviour
 
     private Animator animator; // this is for animations (again)
     
+    public int maxHealth = 3; // Heatlh system, sets the max health to 3
+    public int currentHealth; // Current Heatlh (for when the player takes damage)
     void Start() // what happens when the game starts
     {
         animator = GetComponentInChildren<Animator>(); // this is for animations, it gets the animator component from the game object
         rb = GetComponent<Rigidbody2D>(); // this is for the rigidbody, it gets the rigidbody component from the game object
         spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // this is for the sprite renderer, it gets the sprite renderer component from the game object
+        currentHealth = maxHealth; // this sets the current health to the max health at the start of the game
     }
     
     void Update() // what happens every frame
@@ -62,4 +65,18 @@ public class playerMovement : MonoBehaviour
         // this is the ground check
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, normalGround); // this checks if there is a collider in the ground check radius that is on the normal ground layer, if there is, it sets isGrounded to true, if there isn't, it sets isGrounded to false
     }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage; // when player takes damage it is subtracted from the current health
+        Debug.Log("WARNING: Security breach! System health at " + currentHealth); // prints current health to console 
+
+        // For death
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0; // In case enimies do more damage than the player's current HP
+            Debug.Log("CRITICAL ERROR: System breached! Game Over."); // prints the death thing to the console. 
+        }
+    }
 }
+
