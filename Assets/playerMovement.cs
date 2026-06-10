@@ -9,6 +9,13 @@ public class playerMovement : MonoBehaviour
     public float speed = 5f; // sets speed 
     public float jumpForce = 10f; // sets jump force
 
+    [Header("Damage Feedback")]
+    public SpriteRenderer playerSprite;
+    public UnityEngine.UI.Image screenFlash;
+    public float invulnerabilityDuration = 1.5f; // how long the player is invulnerable
+    public float flashDuration = 0.1f; // how long the flash lasts
+    public bool isInvulnerable = false; // if the player is invulnerable or not
+
     public Rigidbody2D rb; // creates a variable for the rigidbody
     private float moveInput; // creates a variable for the movement input
     private bool isGrounded; // creates a variable to check if the player is on the ground
@@ -68,15 +75,65 @@ public class playerMovement : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        currentHealth -= damage; // when player takes damage it is subtracted from the current health
+        if (isInvulnerable) // if the player is invulnerable, they can't take damage
+            return;
+        currentHealth -= damage;
         Debug.Log("WARNING: Security breach! System health at " + currentHealth); // prints current health to console 
 
+        // Start the feedback loop for both the sprite and screen 
+        StartCoroutine(UnifiedFeedbackLoop()); // starts the invulnerability feedback loop for both the sprite and screen flash
+        
         // For death
         if (currentHealth <= 0)
         {
             currentHealth = 0; // In case enimies do more damage than the player's current HP
-            Debug.Log("CRITICAL ERROR: System breached! Game Over."); // prints the death thing to the console. 
+            Debug.Log("CRITICAL ERROR: System breached! Game Over."); // prints the death thing to the console.
         }
+    } 
+
+    private System.Collections.IEnumerator UnifiedFeedbackLoop()
+    {
+        isInvulnerable = true;
+
+        // Full screen flash
+        if (screenFlash != null)
+        {
+            Color flashColor = screenFlash.color;
+            flashColor.a = 0.4f; // makes it actually visible
+            screenFlash.color = flashColor;
+        }
+
+        // The player sprite flash
+        float elasped = 0f;
+        while (elasped < invulnerabilityDuration)
+        {
+            // Changes sprite visability 
+            if (playerSprite != null)
+            {
+                Color spriteColor = playerSprite.color;
+                spriteColor.a = (spriteColor.a == 1f) ? 0.3f : 1f; // 
+                playerSprite.color = spriteColor;
+            }
+        }
+
+        // makes the screen reduce the flash 
+        if (screenFlash != null)
+        {
+            Color finalFlashColor = screenFlash.color;
+            finalFlashColor.a = 0f; // makes it invisible again
+            screenFlash.color = finalFlashColor;
+        }
+
+        yield return new WaitForSeconds(flashDuration); // this is how long the flash lasts
+        elasped += flashDuration;
+
+        // Makes sure everything goes back to normal 
+        if (playerSprite != null)
+        {
+            Color finalSpriteColor = playerSprite.color;
+            finalSpriteColor.a = 1f; // makes the sprite fully visible again
+            playerSprite.color = finalSpriteColor;
+        }
+        isInvulnerable = false; // makes the player vulnerable again
     }
 }
-
