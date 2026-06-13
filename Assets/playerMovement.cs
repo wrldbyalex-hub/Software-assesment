@@ -9,6 +9,7 @@ public class playerMovement : MonoBehaviour
     public float speed = 5f; // sets speed 
     public float jumpForce = 10f; // sets jump force
 
+    private Coroutine activeFeedbackRoutine; // to keep track of the active feedback coroutine
     [Header("Damage Feedback")]
     public SpriteRenderer playerSprite;
     public UnityEngine.UI.Image screenFlash;
@@ -73,67 +74,111 @@ public class playerMovement : MonoBehaviour
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, normalGround); // this checks if there is a collider in the ground check radius that is on the normal ground layer, if there is, it sets isGrounded to true, if there isn't, it sets isGrounded to false
     }
 
+
     public void TakeDamage(int damage)
     {
-        if (isInvulnerable) // if the player is invulnerable, they can't take damage
-            return;
-        currentHealth -= damage;
-        Debug.Log("WARNING: Security breach! System health at " + currentHealth); // prints current health to console 
+        // Ignore damage if the player is currently invulnerable
+        if (isInvulnerable) return;
 
-        // Start the feedback loop for both the sprite and screen 
-        StartCoroutine(UnifiedFeedbackLoop()); // starts the invulnerability feedback loop for both the sprite and screen flash
-        
-        // For death
+        currentHealth -= damage; 
+        Debug.Log("WARNING: Security breach! System health at " + currentHealth); 
+
+        // Stops any other loops before starting a new one
+        if (activeFeedbackRoutine != null)
+        {
+            StopCoroutine(activeFeedbackRoutine);
+        }
+    
+        // starting a new loop
+        activeFeedbackRoutine = StartCoroutine(UnifiedFeedbackLoop());
+
         if (currentHealth <= 0)
         {
-            currentHealth = 0; // In case enimies do more damage than the player's current HP
-            Debug.Log("CRITICAL ERROR: System breached! Game Over."); // prints the death thing to the console.
+            currentHealth = 0; 
+            Debug.Log("CRITICAL ERROR: System breached! Game Over."); 
         }
-    } 
+    }
 
     private System.Collections.IEnumerator UnifiedFeedbackLoop()
     {
         isInvulnerable = true;
 
-        // Full screen flash
+        // triggering the full screen flash
+
         if (screenFlash != null)
         {
             Color flashColor = screenFlash.color;
-            flashColor.a = 0.4f; // makes it actually visible
+            flashColor.a = 0.2f; // makes it actually visible
             screenFlash.color = flashColor;
         }
 
-        // The player sprite flash
-        float elasped = 0f;
-        while (elasped < invulnerabilityDuration)
+        float elapsed = 0f;
+        float toggleInterval = 0.1f; // How fast the player sprite blinks (e.g., every 0.1 seconds)
+        float timerSinceLastToggle = 0f;
+
+        //The player sprite flash loop
+
+        while (elapsed < invulnerabilityDuration)
         {
-            // Changes sprite visability 
-            if (playerSprite != null)
+
+            // timers by the time passed since the last frame
+
+            elapsed += Time.deltaTime;
+            timerSinceLastToggle += Time.deltaTime;
+
+            // Toggle player sprite visibility at set intervals
+
+            if (timerSinceLastToggle >= toggleInterval)
+
             {
-                Color spriteColor = playerSprite.color;
-                spriteColor.a = (spriteColor.a == 1f) ? 0.3f : 1f; // 
-                playerSprite.color = spriteColor;
+
+                if (playerSprite != null)
+
+                {
+
+                    Color spriteColor = playerSprite.color;
+
+                    spriteColor.a = (spriteColor.a == 1f) ? 0.3f : 1f;
+
+                    playerSprite.color = spriteColor;
+                }
+        
+                timerSinceLastToggle = 0f; // Reset the toggle timer
             }
+        
+            // Turn off the screen flash early if flashDuration is reached
+
+            if (screenFlash != null && elapsed >= flashDuration)
+            {
+                Color finalFlashColor = screenFlash.color;
+                finalFlashColor.a = 0f; // makes it invisible again
+                screenFlash.color = finalFlashColor;
+            }
+
+        
+
+            // Yield control back to Unity until the next frame
+
+            yield return null;
         }
 
-        // makes the screen reduce the flash 
+        // Makes sure the screen flash is off
+
         if (screenFlash != null)
         {
             Color finalFlashColor = screenFlash.color;
-            finalFlashColor.a = 0f; // makes it invisible again
+            finalFlashColor.a = 0f;
             screenFlash.color = finalFlashColor;
         }
-
-        yield return new WaitForSeconds(flashDuration); // this is how long the flash lasts
-        elasped += flashDuration;
-
-        // Makes sure everything goes back to normal 
+        
+        // Makes sure the sprite is fully visible again
         if (playerSprite != null)
         {
             Color finalSpriteColor = playerSprite.color;
-            finalSpriteColor.a = 1f; // makes the sprite fully visible again
+            finalSpriteColor.a = 1f;
             playerSprite.color = finalSpriteColor;
         }
+
         isInvulnerable = false; // makes the player vulnerable again
     }
 }
