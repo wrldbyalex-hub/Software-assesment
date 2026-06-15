@@ -23,6 +23,12 @@ public class Hazard : MonoBehaviour
             if (player != null)
             {
                 player.TakeDamage(damage);
+
+                // Tell the CyberTipManager which enemy hit the player so it can show the right tip
+                if (CyberTipManager.instance != null)
+                {
+                    CyberTipManager.instance.showTip(gameObject.GetType().Name);
+                }
             }
             // will get the player take damage 
             HandleDestruction();
