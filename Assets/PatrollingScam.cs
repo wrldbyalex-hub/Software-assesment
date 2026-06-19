@@ -12,7 +12,7 @@ public class PatrollingScam : Hazard
     {
         startPosition = transform.position;
     }
-
+    
     // Update is called once per frame
     void Update()
     {   // moves the enemy back and forth every frame based on its local parameters
