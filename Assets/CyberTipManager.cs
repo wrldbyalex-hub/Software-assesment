@@ -55,7 +55,7 @@ public class CyberTipManager : MonoBehaviour
         // Dictionary that should match each enemy type to a specific tip.
         tipsByEnemy = new Dictionary<string, string>()
         {
-            { "GameObject", "Phishing scams can disguse themselves as trustworthy, so be cautious of unknown and unexpected messages." },
+            { "GameObject", "Phishing scams can disguise themselves as trustworthy, so be cautious of unknown and unexpected messages." },
             { "FallingMalware ", "Malware can be hidden in downloads. Only download from trusted sources." },
             { "SpamBomb", "Spam emails usually contain harmful links or attachments. Never open them." },
             { "SurgingVirus", "Viruses spread very fast once inside a system. Keep your computer safe by using antivirus and keeping it updated." }
@@ -137,6 +137,3 @@ public class CyberTipManager : MonoBehaviour
         activeTipRoutine = null;
     }
 }
-
-
-   

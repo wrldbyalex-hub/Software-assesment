@@ -1,5 +1,4 @@
 // Programmer: Alex
-// Project: Software engineering assesment 
 // this is the script for the player movement
 
 using UnityEngine;
@@ -32,12 +31,20 @@ public class playerMovement : MonoBehaviour
     
     public int maxHealth = 3; // Heatlh system, sets the max health to 3
     public int currentHealth; // Current Heatlh (for when the player takes damage)
+    public HealthUIManager healthUI; // Reference to the hearts UI so we can update it when health changes
+
     void Start() // what happens when the game starts
     {
         animator = GetComponentInChildren<Animator>(); // this is for animations, it gets the animator component from the game object
         rb = GetComponent<Rigidbody2D>(); // this is for the rigidbody, it gets the rigidbody component from the game object
         spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // this is for the sprite renderer, it gets the sprite renderer component from the game object
         currentHealth = maxHealth; // this sets the current health to the max health at the start of the game
+
+        // Builds the starting row of hearts to match maxHealth
+        if (healthUI != null)
+        {
+            healthUI.InitializeHearts(maxHealth);
+        }
     }
     
     void Update() // what happens every frame
@@ -96,6 +103,12 @@ public class playerMovement : MonoBehaviour
         {
             currentHealth = 0; 
             Debug.Log("CRITICAL ERROR: System breached! Game Over."); 
+        }
+
+        // Updates the hearts UI to reflect the new (clamped) health value
+        if (healthUI != null)
+        {
+            healthUI.UpdateHearts(currentHealth);
         }
     }
 

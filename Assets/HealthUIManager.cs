@@ -21,7 +21,7 @@ public class HealthUIManager : MonoBehaviour
 
         for (int i = 0; i < maxHealth; i++)
         {
-            GameObject newHeart = Instantiate(heartv2, transform);
+            GameObject newHeart = Instantiate(heartv2, transform, false);
             Image heartImage = newHeart.GetComponent<Image>();
             if (heartImage != null)
             {
