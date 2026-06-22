@@ -14,8 +14,7 @@ public class Hazard : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("HAZARD SYSTEM: Player fell for a cyber attack! " + gameObject.name); // for testing
-
-
+            
             //we gotta get the player script so we can say that the player takes damage
             playerMovement player = other.GetComponent<playerMovement>();
             
@@ -27,7 +26,7 @@ public class Hazard : MonoBehaviour
                 // Tell the CyberTipManager which enemy hit the player so it can show the right tip
                 if (CyberTipManager.instance != null)
                 {
-                    CyberTipManager.instance.showTip(gameObject.GetType().Name);
+                    CyberTipManager.instance.showTip(GetType().Name);
                 }
             }
             // will get the player take damage 
