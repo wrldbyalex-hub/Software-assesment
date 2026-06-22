@@ -4,11 +4,11 @@ using UnityEngine;
 public class Hazard : MonoBehaviour
 {
   // i will be using the protected keyword so child classes can access this.
-  // virtual means child classes can overide things I write. 
+  // virtual means child classes can overide things i write. 
 
     public int damage = 1; // Seing as the player only has 3 health this seems fair
 
-    protected virtual void OnTriggerEnter2D(Collider2D other) // haven't set a name yet i think (this is what they said to put first; 'other')
+    protected virtual void OnTriggerEnter2D(Collider2D other) 
     {
         // Check if player collided with hazard
         if (other.CompareTag("Player"))
