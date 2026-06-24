@@ -22,13 +22,13 @@ public class PatrollingScam : Hazard
         {
             direction *= -1; // Changes direction
     
-        // CALCULATE EXACT TURN POINT: Multiply the normalized direction by the intended patrol distance
+        // Multiplies the normalised direction by the intended patrol distance
         Vector2 travelDirection = (Vector2)transform.position - startPosition;
         startPosition = startPosition + travelDirection.normalized * patrolDistance;
     
-        // Reset the enemy's position to the exact turn point to prevent overshooting
+        // Updates the start position to the turning point
+        // then its snaps the enemies position to it to stop it from overshooting
         transform.position = startPosition; 
         }
-
     }
 }

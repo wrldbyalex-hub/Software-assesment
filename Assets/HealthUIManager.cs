@@ -12,7 +12,8 @@ public class HealthUIManager : MonoBehaviour
 
     public void InitializeHearts(int maxHealth)
     {
-        // Safe backward loop + DestroyImmediate stops Unity 6 editor crashes
+        // Goes backward through the child tree to prevent bugs when the elements are deleted
+        // This also stops crashes 
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             DestroyImmediate(transform.GetChild(i).gameObject);

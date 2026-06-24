@@ -20,8 +20,9 @@ public class CyberTipManager : MonoBehaviour
     // This will be the main structure, as each key is a different enemy while each value is a tip
     private Dictionary<string, string> tipsByEnemy;
 
-
-    private string[] generalTips; // Backup array of general tips to display when an enemy type doesn't have a specific tip
+    // What the dictionary will default to when it is un able to find a matching string for the enemy type.
+    // It gives a random general tip when the unmapped enemy type calls the function, stopping errors. 
+    private string[] generalTips; 
 
     private Coroutine activeTipRoutine; // tracks the current tip so there isn't overlap
 

@@ -30,7 +30,7 @@ public class playerMovement : MonoBehaviour
     private Animator animator; // this is for animations (again)
     
     public int maxHealth = 3; // Heatlh system, sets the max health to 3
-    public int currentHealth; // Current Heatlh (for when the player takes damage)
+    public int currentHealth; // Current Health (for when the player takes damage, or collides with something)
     public HealthUIManager healthUI; // Reference to the hearts UI so we can update it when health changes
 
     void Start() // what happens when the game starts
@@ -139,7 +139,8 @@ public class playerMovement : MonoBehaviour
             elapsed += Time.deltaTime;
             timerSinceLastToggle += Time.deltaTime;
 
-            // Toggle player sprite visibility at set intervals
+            // Uses a operator to toggle the sprite opacity 
+            // back and forth between 100% and 30%, making it blink
 
             if (timerSinceLastToggle >= toggleInterval)
 

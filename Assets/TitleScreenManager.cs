@@ -10,7 +10,7 @@ public class TitleScreenManager : MonoBehaviour
     public string gamesceneName = "Main game"; 
     
     // Connected to the play button's onlclick event 
-    public void PlayGame()
+    public void PlayGame() // checks if game scene is empty 
     {
         SceneManager.LoadScene(gamesceneName);
     }
